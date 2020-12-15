@@ -1,0 +1,101 @@
+var w = 40;
+var h = 40;
+var spinners = [w];
+var speed = 0.001;
+
+function setup()
+{
+  createCanvas(windowWidth, windowHeight);
+  background(0);
+  
+  var centerX = windowWidth/2;
+  var centerY = windowHeight/2;
+  
+  for (let x = 0; x < w; x++)
+  {
+    spinners[x] = [h]
+    for (let y = 0; y < h; y++)
+    {
+      spinners[x][y] = new Spinner(x*15 + centerX - (20*15), y*15 + centerY - (20*15) + 30, 8, 3, 0);
+    }
+  }
+  
+}
+
+function draw()
+{
+  background(0)
+  noStroke();
+  var c = color(255, 0, 0, 256);
+  fill(c);
+  
+  if (keyIsDown(UP_ARROW))
+  	speed += 0.0001;
+  if (keyIsDown(DOWN_ARROW))
+  	speed -= 0.0001;
+  
+  for (let x = 0; x < w; x++)
+  {
+    for (let y = 0; y < h; y++)
+    {
+      spinners[x][y].spin((x - ((w - 1)/2))*(y - ((h - 1)/2))*speed);
+      spinners[x][y].show();
+    }
+  }
+}
+
+function keyTyped()
+{
+  if (key === 'p')
+  	speed = 0;
+  if (key === 'r')
+    reset();
+}
+
+function reset()
+{
+    for (let x = 0; x < w; x++)
+  {
+    for (let y = 0; y < h; y++)
+    {
+      spinners[x][y].angle = 0;
+    }
+  }
+}
+
+class Spinner
+{
+  constructor(x, y, rOrbit, r, angle)
+  {
+    this.xCen = x;
+    this.yCen = y;
+    this.rOrbit = rOrbit;
+    this.r = r;
+    this.angle = angle;
+    
+    this.x = 0;
+    this.y = 0;
+  }
+  
+  spin(delta)
+  {
+    this.angle += delta;
+    this.x = this.xCen + this.rOrbit*cos(this.angle);
+    this.y = this.yCen + this.rOrbit*sin(this.angle);
+    
+    var r = cos(this.angle)*127+128;
+    var b = sin(this.angle)*127+128;
+    this.c = color(r, 0, b);
+  }
+  
+  show()
+  {
+    noFill();
+    stroke(128);
+    //ellipse(this.xCen, this.yCen, 2*this.rOrbit, 2*this.rOrbit);
+    
+    fill(this.c);
+    noStroke();
+    ellipse(this.x, this.y, this.r, this.r);
+  }
+}
